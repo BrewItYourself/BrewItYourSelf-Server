@@ -1,6 +1,7 @@
 package com.brewityourself.server.container;
 
 import com.brewityourself.server.dto.BrewLog;
+import com.brewityourself.server.dto.BrewRecipe;
 import com.brewityourself.server.service.BrewLogService;
 import com.brewityourself.server.service.impl.BrewLogServiceImpl;
 
@@ -28,7 +29,11 @@ public class BrewLogResource {
         System.out.println("brewid: " + brewid);
         List<BrewLog> brewLogs = brewLogService.getBrewLogs(brewid);
 
-        if (brewLogs.size() > 0) {
+        if (brewLogs == null) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
+        } else if (brewLogs.isEmpty()) {
             return Response
                     .ok()
                     .type(MediaType.APPLICATION_JSON_TYPE)
@@ -81,5 +86,15 @@ public class BrewLogResource {
                 .entity(brewLogService.testBrewLog())
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
+    }
+
+    @PUT
+    @Path("/start")
+    @Produces("application/json")
+    public Response startBrew(BrewRecipe brewRecipe) {
+
+        brewLogService.startBrew(brewRecipe);
+
+        return Response.status(Response.Status.CREATED).build();
     }
 }

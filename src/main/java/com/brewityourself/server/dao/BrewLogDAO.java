@@ -34,7 +34,7 @@ public interface BrewLogDAO {
      * @param brewid
      * @return BrewLog
      */
-    BrewLog getCurrentBrewLog(int brewid);
+    List<BrewLog> getCurrentBrewLog(int brewid);
 
     /**
      * Get a test Brew log

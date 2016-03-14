@@ -3,9 +3,12 @@ package com.brewityourself.server.service.impl;
 import com.brewityourself.server.dao.BrewLogDAO;
 import com.brewityourself.server.dao.impl.BrewLogDAOImpl;
 import com.brewityourself.server.dto.BrewLog;
+import com.brewityourself.server.dto.BrewRecipe;
 import com.brewityourself.server.service.BrewLogService;
+import com.brewityourself.server.utils.BrewState;
 import com.brewityourself.server.utils.GCMSender;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -17,7 +20,6 @@ public class BrewLogServiceImpl implements BrewLogService {
 
     public BrewLogServiceImpl() {
         brewLogDAO = new BrewLogDAOImpl();
-
     }
 
     @Override
@@ -44,6 +46,20 @@ public class BrewLogServiceImpl implements BrewLogService {
     @Override
     public BrewLog testBrewLog() {
         return brewLogDAO.testBrewLog();
+    }
+
+    @Override
+    public void startBrew(BrewRecipe brewRecipe) {
+
+        //TODO: CALL Whatever starts the brew and hopefully return the date
+
+        BrewLog brewLog = new BrewLog();
+        brewLog.setBrewState(BrewState.STARTED.name());
+        brewLog.setLogTime(new Date(new java.util.Date().getTime()));
+        brewLog.setTemperature(22);
+
+        brewLogDAO.putBrewLog(brewLog);
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.brewityourself.server.service;
 
 import com.brewityourself.server.dto.BrewLog;
+import com.brewityourself.server.dto.BrewRecipe;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -38,4 +39,10 @@ public interface BrewLogService {
     boolean sendBrewData(int brewid);
 
     BrewLog testBrewLog();
+
+    /**
+     * Start a new brew
+     * @param brewRecipe
+     */
+    void startBrew(BrewRecipe brewRecipe);
 }

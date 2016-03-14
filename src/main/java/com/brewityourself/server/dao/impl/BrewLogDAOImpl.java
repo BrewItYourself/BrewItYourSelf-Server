@@ -2,9 +2,8 @@ package com.brewityourself.server.dao.impl;
 
 import com.brewityourself.server.dao.BrewLogDAO;
 import com.brewityourself.server.dto.BrewLog;
-import com.brewityourself.server.utils.BrewConnection;
+import com.brewityourself.server.utils.BrewDatabaseConnection;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public class BrewLogDAOImpl implements BrewLogDAO {
 
-    private BrewConnection brewConnection;
+    private BrewDatabaseConnection brewDatabaseConnection;
 
     private static final String BREW_ID = "brewid";
     private static final String BREW_STATE = "brewstate";
@@ -25,13 +24,13 @@ public class BrewLogDAOImpl implements BrewLogDAO {
     private static final String BREW_LOGTIME = "logtime";
 
     public BrewLogDAOImpl() {
-        brewConnection = new BrewConnection();
+        brewDatabaseConnection = new BrewDatabaseConnection();
     }
 
     public List<BrewLog> getBrewLogs(int brewid) {
         String sqlStatement = "SELECT * FROM brewlogs where brewid = ?";
         try {
-            PreparedStatement preparedStatement = brewConnection.getJdbcConnection().prepareStatement(sqlStatement);
+            PreparedStatement preparedStatement = brewDatabaseConnection.getJdbcConnection().prepareStatement(sqlStatement);
             preparedStatement.setInt(1, brewid);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -56,13 +55,14 @@ public class BrewLogDAOImpl implements BrewLogDAO {
     public boolean putBrewLog(BrewLog brewLog) {
         String insertString = "INSERT INTO brewlogs (brewid, logtime, brewstate, temperature) VALUES (?, ?, ?, ?)";
         try {
-            PreparedStatement preparedStatement = brewConnection.getJdbcConnection().prepareStatement(insertString);
+            PreparedStatement preparedStatement = brewDatabaseConnection.getJdbcConnection().prepareStatement(insertString);
             preparedStatement.setInt(1, brewLog.getBrewId());
             preparedStatement.setDate(2, brewLog.getLogTime());
             preparedStatement.setString(3, brewLog.getBrewState());
             preparedStatement.setDouble(4, brewLog.getTemperature());
 
-            preparedStatement.executeUpdate();
+            return (preparedStatement.executeUpdate() > 0);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,24 +73,44 @@ public class BrewLogDAOImpl implements BrewLogDAO {
     @Override
     public List<String> getBrews() {
         String selectString = "SELECT DISTINCT brewid FROM brewlogs";
+        try {
+            PreparedStatement preparedStatement =
+                    brewDatabaseConnection.getJdbcConnection().prepareStatement(selectString);
 
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<String> brewList = new ArrayList<>();
+            while (resultSet.next()) {
+                brewList.add(Integer.toString(resultSet.getInt(BREW_ID)));
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public BrewLog getCurrentBrewLog(int brewid) {
-        String sqlStatement = "SELECT * FROM brewlogs where brewid = ?";
+    public List<BrewLog> getCurrentBrewLog(int brewid) {
+        String sqlStatement = "SELECT * FROM brewlogs WHERE brewid = ? ORDER BY logtime";
         try {
-            PreparedStatement preparedStatement = brewConnection.getJdbcConnection().prepareStatement(sqlStatement);
+            PreparedStatement preparedStatement = brewDatabaseConnection.getJdbcConnection().prepareStatement(sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            BrewLog brewLog = new BrewLog();
-            brewLog.setBrewId(resultSet.getInt(BREW_ID));
-            brewLog.setBrewState(resultSet.getString(BREW_STATE));
-            brewLog.setTemperature(resultSet.getDouble(BREW_TEMPERATURE));
-            brewLog.setLogTime(resultSet.getDate(BREW_LOGTIME));
+            List<BrewLog> brewLogList = new ArrayList<>();
+            BrewLog brewLog;
 
-            return brewLog;
+            while (resultSet.next()) {
+                brewLog = new BrewLog();
+                brewLog.setBrewId(resultSet.getInt(BREW_ID));
+                brewLog.setBrewState(resultSet.getString(BREW_STATE));
+                brewLog.setTemperature(resultSet.getDouble(BREW_TEMPERATURE));
+                brewLog.setLogTime(resultSet.getDate(BREW_LOGTIME));
+
+                brewLogList.add(brewLog);
+            }
+            return brewLogList;
         } catch (SQLException e) {
             e.printStackTrace();
         }

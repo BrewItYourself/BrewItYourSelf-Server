@@ -24,7 +24,7 @@ public class MainApplication extends ResourceConfig {
     public MainApplication() {
         packages("com.brewityourself.server.container");
         register(BrewLogResource.class);
-        register(GCMNotificationResource.class);
+//        register(GCMNotificationResource.class);
         register(JacksonJsonProvider.class);
         register(JacksonFeature.class);
     }
@@ -36,16 +36,12 @@ public class MainApplication extends ResourceConfig {
         final HttpServer server = JdkHttpServerFactory.createHttpServer(BASE_URI, mainApplication, false);
         HttpHandler handler = RuntimeDelegate.getInstance().createEndpoint(mainApplication, HttpHandler.class);
 
-        server.createContext(getBaseURI().getPath(), handler);
+        server.createContext(BASE_URI.getPath(), handler);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             server.stop(0);
         }));
 
         server.start();
-    }
-
-    public static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost/").port(8080).build();
     }
 
 }
