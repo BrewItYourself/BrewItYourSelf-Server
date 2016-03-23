@@ -23,3 +23,9 @@ CREATE TABLE `brewtable` (
   `brewid` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`brewid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+CREATE TABLE temperatureSensorData (
+	'id' int(11) NOT NULL, 
+	'temperature' double NOT NULL, 
+	'time_stamp' datetime NOT NULL DEFAULT NOW()
+);

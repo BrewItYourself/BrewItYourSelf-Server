@@ -53,13 +53,12 @@ public class BrewLogDAOImpl implements BrewLogDAO {
     }
 
     public boolean putBrewLog(BrewLog brewLog) {
-        String insertString = "INSERT INTO brewlogs (brewid, logtime, brewstate, temperature) VALUES (?, ?, ?, ?)";
+        String insertString = "INSERT INTO brewlogs (brewid, logtime, brewstate, temperature) VALUES (?, NOW(), ?, ?)";
         try {
             PreparedStatement preparedStatement = brewDatabaseConnection.getJdbcConnection().prepareStatement(insertString);
             preparedStatement.setInt(1, brewLog.getBrewId());
-            preparedStatement.setDate(2, brewLog.getLogTime());
-            preparedStatement.setString(3, brewLog.getBrewState());
-            preparedStatement.setDouble(4, brewLog.getTemperature());
+            preparedStatement.setString(2, brewLog.getBrewState());
+            preparedStatement.setDouble(3, brewLog.getTemperature());
 
             return (preparedStatement.executeUpdate() > 0);
 

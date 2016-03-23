@@ -2,7 +2,9 @@ package com.brewityourself.server.container;
 
 import com.brewityourself.server.utils.GCMSender;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
@@ -17,7 +19,7 @@ public class GCMNotificationResource {
         gcmSender = new GCMSender();
     }
 
-    @POST
+    @PUT
     @Path("/send")
     @Consumes("application/json")
     public Response gcmSendMessage(String message) {

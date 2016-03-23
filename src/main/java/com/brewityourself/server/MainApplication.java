@@ -2,6 +2,7 @@ package com.brewityourself.server;
 
 import com.brewityourself.server.container.BrewLogResource;
 import com.brewityourself.server.container.GCMNotificationResource;
+import com.brewityourself.server.container.TemperatureSensorResource;
 import com.brewityourself.server.utils.Constants;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -24,7 +25,8 @@ public class MainApplication extends ResourceConfig {
     public MainApplication() {
         packages("com.brewityourself.server.container");
         register(BrewLogResource.class);
-//        register(GCMNotificationResource.class);
+        register(GCMNotificationResource.class);
+        register(TemperatureSensorResource.class);
         register(JacksonJsonProvider.class);
         register(JacksonFeature.class);
     }

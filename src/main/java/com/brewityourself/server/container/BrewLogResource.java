@@ -97,4 +97,14 @@ public class BrewLogResource {
 
         return Response.status(Response.Status.CREATED).build();
     }
+
+    @PUT
+    @Path("/heat")
+    @Produces("application/json")
+    public Response startHeat(boolean start) {
+
+        brewLogService.startHeat(start);
+
+        return Response.status(Response.Status.CREATED).build();
+    }
 }

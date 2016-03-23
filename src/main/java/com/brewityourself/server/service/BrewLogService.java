@@ -45,4 +45,6 @@ public interface BrewLogService {
      * @param brewRecipe
      */
     void startBrew(BrewRecipe brewRecipe);
+
+    void startHeat(boolean start);
 }
